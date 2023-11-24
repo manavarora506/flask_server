@@ -1,1 +1,1 @@
-web: gunicorn -w 4 summarize_essay:app
+web: gunicorn summarize_essay:app
