@@ -27,7 +27,8 @@ def summarize():
         num_tokens = llm.get_num_tokens(text)
         text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n"], chunk_size=5000, chunk_overlap=350)
         docs = text_splitter.create_documents([text])
-        chain = load_summarize_chain(llm=llm, chain_type="map_reduce")
+        combine_prompt = "Give a robust 6-8 sentence summary on the text"
+        chain = load_summarize_chain(llm=llm, chain_type="map_reduce", combine_prompt=combine_prompt)
         output = chain.run(docs)
 
         return jsonify({'summary': output})
