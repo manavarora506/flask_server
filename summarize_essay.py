@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from langchain.llms import OpenAI
 from flask_cors import CORS  # Import the CORS library
 import os
+from langchain.prompts import PromptTemplate
 from langchain.chains.summarize import load_summarize_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
@@ -25,10 +26,16 @@ def summarize():
 
     # LangChain summarization logic
         num_tokens = llm.get_num_tokens(text)
-        text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n"], chunk_size=5000, chunk_overlap=350)
+        text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n"], chunk_size=700, chunk_overlap=50)
         docs = text_splitter.create_documents([text])
-        combine_prompt = "Give a robust 6-8 sentence summary on the text"
-        chain = load_summarize_chain(llm=llm, chain_type="map_reduce", combine_prompt=combine_prompt)
+        prompt_template = """Write a comprehensive summary of this blog post
+        
+        {text} 
+        
+        SUMMARY:"""
+        PROMPT = PromptTemplate(template=prompt_template, input_variables=["text"])
+
+        chain = load_summarize_chain(llm=llm, chain_type="map_reduce", map_prompt=PROMPT, combine_prompt=PROMPT, verbose=True)
         output = chain.run(docs)
 
         return jsonify({'summary': output})
