@@ -26,7 +26,7 @@ def summarize():
 
     # LangChain summarization logic
         num_tokens = llm.get_num_tokens(text)
-        text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n"], chunk_size=700, chunk_overlap=50)
+        text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n"], chunk_size=1500, chunk_overlap=50)
         docs = text_splitter.create_documents([text])
         prompt_template = """Write a comprehensive summary of this blog post
         
